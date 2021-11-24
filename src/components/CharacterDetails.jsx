@@ -8,7 +8,7 @@ export const CharacterDetails = () => {
 
   useEffect(() => {
     getCharacter();
-  });
+  }, []);
 
   const getCharacter = () => {
     axios.get(`https://rickandmortyapi.com/api/character/${id}`)
@@ -16,13 +16,16 @@ export const CharacterDetails = () => {
       setCharacter(response.data);
     });
   }
-
+  
+  console.log(character);
   return (
     <div className='characterCard-div'>
      { character &&  
-        
+        <div>
         <h3>{character.name}</h3>
-
+        <img src={character.image} alt={character.name} />
+        <p>status: {character.status}</p>
+        </div>
      }
     </div>
   );
