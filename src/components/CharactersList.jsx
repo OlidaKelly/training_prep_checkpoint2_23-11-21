@@ -1,46 +1,76 @@
-import { useEffect, useState } from 'react';
-import { CharacterCard } from './CharacterCard';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { CharacterCard } from "./CharacterCard";
+import axios from "axios";
 
 export const CharactersList = () => {
   const [characters, setCharacters] = useState([]);
+  const [infos, setInfos] = useState([]);
   const [characterAliveClick, setCharacterAliveclick] = useState(false);
-  
+  const [page, setPage] = useState(1);
+
   useEffect(() => {
-      getCharactersFromApi();
-  }, []);
+    getDataFromApi(page);
+  }, [page]);
 
-  const getCharactersFromApi = () => {
-    axios.get('https://rickandmortyapi.com/api/character')
-    .then(response => setCharacters(response.data.results))
-  }
-
-  
+  const getDataFromApi = (numberPage) => {
+    axios
+      .get(`https://rickandmortyapi.com/api/character?page=${numberPage}`)
+      .then((response) => {
+        setCharacters(response.data.results);
+        setInfos(response.data.info);
+        setPage(numberPage);
+      });
+  };
 
   const filterCharacters = () => {
-    if(characterAliveClick === false){
-      setCharacterAliveclick(true)
-      setCharacters(characters.filter(character => character.status === 'Alive'))
-    }
-    else{
+    if (characterAliveClick === false) {
+      setCharacterAliveclick(true);
+      setCharacters(
+        characters.filter((character) => character.status === "Alive")
+      );
+    } else {
       setCharacterAliveclick(false);
-      getCharactersFromApi();
+      getDataFromApi();
     }
-    
-  }
+  };
 
-  console.log(characters)
-
+  console.log(page);
 
   return (
-      <div className='charactersList-div'>
+    <div className="charactersList-div">
+      <div>
         <div>
-          <button className='button-filter' type="button" onClick={() => filterCharacters()} >{characterAliveClick ? "Get All Characters":"Get Alive Characters"}</button>
+          <p>Total result : {infos && infos.conut}</p>
+          <p>{page} / {infos && infos.pages}</p>
         </div>
-        {
-          characters ? characters.map(character => <CharacterCard key={character.id} character={character} />) :
-          'loading...'
-        }
+        <button
+          className="button-filter"
+          type="button"
+          onClick={() => filterCharacters()}
+        >
+          {characterAliveClick ? "Get All Characters" : "Get Alive Characters"}
+        </button>
+
+        <button
+          className="button-prev"
+          type="button"
+          onClick={() => infos.prev !== null && getDataFromApi(page - 1)}
+        >
+          Prev
+        </button>
+        <button
+          className="button-next"
+          type="button"
+          onClick={() => infos.next !== null && getDataFromApi(page + 1)}
+        >
+          Next
+        </button>
       </div>
+      {characters
+        ? characters.map((character) => (
+            <CharacterCard key={character.id} character={character} />
+          ))
+        : "loading..."}
+    </div>
   );
-}
+};
