@@ -37,40 +37,33 @@ export const CharactersList = () => {
   console.log(page);
 
   return (
-    <div className="charactersList-div">
-      <div>
-        <div>
-          <p>Total result : {infos && infos.conut}</p>
-          <p>{page} / {infos && infos.pages}</p>
-        </div>
-        <button
-          className="button-filter"
-          type="button"
-          onClick={() => filterCharacters()}
-        >
-          {characterAliveClick ? "Get All Characters" : "Get Alive Characters"}
-        </button>
+    <div className="container mx-auto py-4">
 
-        <button
-          className="button-prev"
-          type="button"
-          onClick={() => infos.prev !== null && getDataFromApi(page - 1)}
-        >
-          Prev
-        </button>
-        <button
-          className="button-next"
-          type="button"
-          onClick={() => infos.next !== null && getDataFromApi(page + 1)}
-        >
-          Next
-        </button>
+      <div>
+        <p>Total result : {infos && infos.conut}</p>
+        <p>{page} / {infos && infos.pages}</p>
       </div>
-      {characters
-        ? characters.map((character) => (
-            <CharacterCard key={character.id} character={character} />
-          ))
-        : "loading..."}
+
+      <button className="bg-green-500 hover:bg-green-400 text-white-200 font-bold p-3 border rounded-xl" type="button" onClick={() => filterCharacters()}>
+        {characterAliveClick ? "Get All Characters" : "Get Alive Characters"}
+      </button>
+
+      <button className="bg-blue-500 hover:bg-blue-400 text-white-200 font-bold p-3 border rounded-xl" type="button" onClick={() => infos.prev !== null && getDataFromApi(page - 1)}>
+        Prev
+      </button>
+
+      <button className="bg-blue-500 hover:bg-blue-400 text-white-200 font-bold p-3 border rounded-xl" type="button"onClick={() => infos.next !== null && getDataFromApi(page + 1)}>
+        Next
+      </button>
+
+      <div className="grid grid-cols-1 grid-cols-3 xl:grid-cols-4">
+        {characters
+          ? characters.map((character) => (
+          <CharacterCard key={character.id} character={character} />
+            ))
+          : "loading..."
+        }
+      </div>
     </div>
   );
 };
